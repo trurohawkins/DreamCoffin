@@ -6,7 +6,7 @@ game:
 	$(MAKE) libFormGlfw.a -C $(FORM)
 	$(MAKE) DreamCoffin 
 
-$(TITLE): main.c $(FORM)FormNetwork.h $(FORM)libFormGlfw.a $(FORM)glad.o oneiro.c oneiro.h
+$(TITLE): main.c $(FORM)FormNetwork.h $(FORM)libFormGlfw.a $(FORM)glad.o oneiro.c oneiro.h coffin.c coffin.h
 	cp $(FORM)FormNetwork.h .
 	cp $(FORM)libFormGlfw.a .
 	cp $(FORM)glad.o .

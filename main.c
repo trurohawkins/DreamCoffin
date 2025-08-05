@@ -1,7 +1,8 @@
 #include "FormNetwork.h"
-int world = 50;
-int frame = 50;
+int world = 51;
+int frame = 51;
 #include "oneiro.c"
+#include "coffin.c"
 
 void game();
 void exitLoop(void *p, float val);
@@ -24,7 +25,7 @@ int main(int argc, char **argv) {
 	}
 
 	Oneiro *oni = birthOneiro();
-	placeForm(world/2, world/2, oni->self);
+	Coffin *cof = makeCoffin(oni);
 
 	FormLoop(game);
 
@@ -33,6 +34,8 @@ int main(int argc, char **argv) {
 			removeFormPos(grass, x, y);
 		}
 	}
+	deleteForm(grass);
+	freeCoffin(cof);
 	exitGame();
 	free(oni);
 }

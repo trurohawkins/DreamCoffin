@@ -25,6 +25,8 @@ void setDriftDirection(Oneiro *oni);
 void setZipDirection(Oneiro *oni);
 void setDestDir(Oneiro *oni, float x, float y);
 
+void setCorners(Oneiro *oni, int *corners);
+
 void driftUp(void *o, float val);
 void driftLeft(void *o, float val);
 void driftDown(void *o, float val);

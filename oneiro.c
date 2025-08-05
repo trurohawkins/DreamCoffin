@@ -8,7 +8,7 @@ Oneiro *birthOneiro() {
 	oneiro->zip[0] = -1;
 	oneiro->zip[1] = -1;
 	int c[8] = {0, world-1,  0, 0,  world-1, 0,  world-1, world-1};
-	memcpy(oneiro->corners, c, sizeof(int) * 8);
+	setCorners(oneiro, c);
 	oneiro->self = makeForm(0.4, 0.1, 0.5, 1, 1);
 
 	Actor *actor = makeActor(oneiro->self);
@@ -89,10 +89,20 @@ bool moveOneiro(Oneiro *oni) {
 		dest[1] += sign(oni->moveDir[1]);
 		//printf("movei to %i, %i\n", dest[0], dest[1]);
 		if (dest[0] > -1 && dest[1] > -1 && dest[0] < world && dest[1] < world) {
+			linkedList *hit = scanCell(dest[0], dest[1]);
+			while (hit) {
+				Form *check = hit->data;
+				if (check->id == 1) {
+					return false;
+				} 
+				hit = hit->next;
+			}
 			removeForm(oni->self);
 			placeForm(dest[0], dest[1], oni->self);
+			return true;
 		}
 	}
+	return false;
 }
 
 int getLast(intList *stack) {
@@ -179,6 +189,10 @@ void setDestDir(Oneiro *oni , float x, float y) {
 			oni->curAccel = 0;
 		}
 	}
+}
+
+void setCorners(Oneiro *oni, int *corners) {
+	memcpy(oni->corners, corners, sizeof(int) * 8);
 }
 
 
