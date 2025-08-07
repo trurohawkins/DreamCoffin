@@ -5248,6 +5248,7 @@ int sign(int);
 int signF(float num);
 bool equal(float a, float b);
 float lerp(float a, float b, float t);
+float slerp(float a, float b, float t);
 
 float distance(float x1, float y1, float x2, float y2);
 char *fileToString(char *txt);
@@ -5293,7 +5294,7 @@ void freeList(linkedList **ll);
 void deleteList(linkedList **ll, void (*deleteFunc)(void*));
 void freeListSaveObj(linkedList **ll);
 void *popList(linkedList **head);
-# 46 "formglfw/../form/../helper/helper.h" 2
+# 47 "formglfw/../form/../helper/helper.h" 2
 # 1 "formglfw/../form/../helper/intList.h" 1
 
 
@@ -5311,7 +5312,7 @@ int removeFromIntList(intList **head, int item);
 void checkAndRemoveInt(intList **head, bool (*chk)(int));
 int countList(intList *head);
 void freeIntList(intList **head);
-# 47 "formglfw/../form/../helper/helper.h" 2
+# 48 "formglfw/../form/../helper/helper.h" 2
 # 1 "formglfw/../form/../helper/sortedList.h" 1
 
 
@@ -5329,12 +5330,12 @@ void *searchSlist(SortedList *cur, int val);
 bool isInSlist(SortedList *cur, void *data);
 void freeSlist(SortedList *head);
 void printSlist(SortedList *head);
-# 48 "formglfw/../form/../helper/helper.h" 2
+# 49 "formglfw/../form/../helper/helper.h" 2
 # 1 "formglfw/../form/../helper/binaryWriter.h" 1
 bool writeBinaryInt(char *file, int *val, int num);
 int fput32le(int x, char *file);
 int *readBinaryInt(FILE *fptr, int num);
-# 49 "formglfw/../form/../helper/helper.h" 2
+# 50 "formglfw/../form/../helper/helper.h" 2
 # 4 "formglfw/../form/Form.h" 2
 typedef struct Form {
  int id;

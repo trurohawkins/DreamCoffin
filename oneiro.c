@@ -1,5 +1,6 @@
 #include "oneiro.h"
 int minSpeed = 20;
+float accel = 0.001;
 
 Oneiro *birthOneiro() {
 	Oneiro *oneiro = calloc(1, sizeof(Oneiro));
@@ -30,23 +31,6 @@ Oneiro *birthOneiro() {
 	return oneiro;
 }
 
-float lerpDir(float cur, float dest, float accel) {
-	if (cur > dest) {
-		if (cur - accel > dest) {
-			cur -= accel;
-		} else {
-			cur = dest;
-		}
-	} else if (cur < dest) {
-		if (cur + accel < dest) {
-			cur += accel;
-		} else {
-			cur = dest;
-		}
-	}
-	return cur;
-}
-
 int oneiroAction(Form *o, Action *a) {
 	Oneiro *oni = (Oneiro*)a->vars;
 
@@ -54,6 +38,16 @@ int oneiroAction(Form *o, Action *a) {
 		setDriftDirection(oni);
 	} else {
 		setZipDirection(oni);
+	}
+	if (oni->moveDir[0] != oni->destDir[0] || oni->moveDir[1] != oni->destDir[1]) {
+		oni->moveDir[0] = slerp(oni->moveDir[0], oni->destDir[0], oni->curAccel);
+		oni->moveDir[1] = slerp(oni->moveDir[1], oni->destDir[1], oni->curAccel);
+		printf("%f, %f\n", oni->moveDir[0], oni->moveDir[1]);
+		if (oni->curAccel + accel < 1) {
+			oni->curAccel += accel;
+		} else {
+			oni->curAccel = 1;
+		}
 	}
 
 	float mag = sqrt(oni->moveDir[0] * oni->moveDir[0] + oni->moveDir[1] * oni->moveDir[1]);
@@ -63,18 +57,6 @@ int oneiroAction(Form *o, Action *a) {
 	if (oni->moveCounter < minSpeed - mag) {//oni->moveInterval) {
 		oni->moveCounter++;	
 	} else {
-		if (oni->moveDir != oni->destDir) {
-			//printf("-> %f, %f\n", oni->destDir[0], oni->destDir[1]);
-			//oni->moveDir[0] = lerpDir(oni->moveDir[0], oni->destDir[0], oni->curAccel);
-			//oni->moveDir[1] = lerpDir(oni->moveDir[1], oni->destDir[1], oni->curAccel);
-			oni->moveDir[0] = lerp(oni->moveDir[0], oni->destDir[0], oni->curAccel);
-			oni->moveDir[1] = lerp(oni->moveDir[1], oni->destDir[1], oni->curAccel);
-			if (oni->curAccel + 0.1f < 1) {
-				oni->curAccel += 0.1f;
-			} else {
-				oni->curAccel = 1;
-			}
-		}
 		moveOneiro(oni);
 		oni->moveCounter = 0;
 	}
@@ -93,6 +75,13 @@ bool moveOneiro(Oneiro *oni) {
 			while (hit) {
 				Form *check = hit->data;
 				if (check->id == 1) {
+					/*
+					oni->moveDir[0] = 0;
+					oni->moveDir[1] = 0;
+					oni->destDir[0] = 0;
+					oni->destDir[1] = 0;
+					oni->curAccel = 0;
+					*/
 					return false;
 				} 
 				hit = hit->next;
@@ -183,7 +172,7 @@ void setDestDir(Oneiro *oni , float x, float y) {
 		//printf("(%f, %f) -> (%f, %f)\n", oni->destDir[0], oni->destDir[1], x, y);
 		oni->destDir[0] = x;
 		oni->destDir[1] = y;
-		if (abs(oni->destDir[0] - oni->moveDir[0]) <= 1 || abs(oni->destDir[1] - oni->moveDir[1]) <= 1 || abs(oni->destDir[0]) == 1 || abs(oni->destDir[1]) == 1) {
+		if (abs(oni->destDir[0] - oni->moveDir[0]) <= 1 || abs(oni->destDir[1] - oni->moveDir[1]) <= 1) {// || abs(oni->destDir[0]) == 1 || abs(oni->destDir[1]) == 1) {
 			oni->curAccel = 1;
 		} else {
 			oni->curAccel = 0;

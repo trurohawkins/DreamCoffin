@@ -2,8 +2,8 @@
 
 Coffin *makeCoffin(Oneiro *oni) {
 	Coffin *cof = calloc(1, sizeof(Coffin));
-	cof->size[0] = 31;
-	cof->size[1] = 21;
+	cof->size[0] = 41;
+	cof->size[1] = 31;
 	cof->base = makeForm(0, 0, 0, cof->size[0], cof->size[1]);
 	cof->side = makeForm(1, 1, 1, 0, 0);
 	cof->side->id = 1;
