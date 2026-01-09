@@ -8,7 +8,7 @@ void game();
 void exitLoop(void *p, float val);
 int main(int argc, char **argv) {
 	initFormGlfw();
-	Player *GM = makePlayer(0, 0, 0);
+	Player *GM = makePlayer(0, 1, 0);
 	addPlayer(GM);
 	addControl(GM, "K0!", exitLoop);
 

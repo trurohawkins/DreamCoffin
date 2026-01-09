@@ -27,6 +27,8 @@ void setDestDir(Oneiro *oni, float x, float y);
 
 void setCorners(Oneiro *oni, int *corners);
 
+void driftX(void *o, float val);
+void driftY(void *o, float val);
 void driftUp(void *o, float val);
 void driftLeft(void *o, float val);
 void driftDown(void *o, float val);

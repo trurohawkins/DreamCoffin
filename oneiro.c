@@ -17,7 +17,7 @@ Oneiro *birthOneiro() {
 	addAction(actor, a);
 	addActor(actor);
 
-	Player *p = makePlayer(oneiro, 1, 0);
+	Player *p = makePlayer(oneiro, 0, 0);
 	addPlayer(p);
 	addControl(p, "K0W", driftUp);
 	addControl(p, "K0A", driftLeft);
@@ -27,6 +27,17 @@ Oneiro *birthOneiro() {
 	addControl(p, "K0K", zipSW);
 	addControl(p, "K0L", zipSE);
 	addControl(p, "K0P", zipNE);
+	
+	makeJoyButtControl(p, ';', driftUp);
+	makeJoyButtControl(p, '>', driftLeft);
+	makeJoyButtControl(p, '=', driftDown);
+	makeJoyButtControl(p, '<', driftRight);
+	makeJoyButtControl(p, '5', zipNE);
+	makeJoyButtControl(p, '4', zipNW);
+	makeJoyAxeControl(p, '4', zipSW);
+	makeJoyAxeControl(p, '5', zipSE);
+	makeJoyAxeControl(p, '0', driftX);
+	makeJoyAxeControl(p, '1', driftY);
 	
 	return oneiro;
 }
@@ -190,6 +201,34 @@ void setDestDir(Oneiro *oni , float x, float y) {
 
 void setCorners(Oneiro *oni, int *corners) {
 	memcpy(oni->corners, corners, sizeof(int) * 8);
+}
+
+void driftX(void *o, float val) {
+	int dir = signF(val);
+	if (val == 1) {
+		setDrift(o, 3, true);
+		setDrift(o, 1, false);
+	} else if (val == -1) {
+		setDrift(o, 3, false);
+		setDrift(o, 1, true);
+	} else {
+		setDrift(o, 3, false);
+		setDrift(o, 1, false);
+	}
+}
+
+void driftY(void *o, float val) {
+	int dir = signF(val);
+	if (val == 1) {
+		setDrift(o, 0, true);
+		setDrift(o, 2, false);
+	} else if (val == -1) {
+		setDrift(o, 0, false);
+		setDrift(o, 2, true);
+	} else {
+		setDrift(o, 0, false);
+		setDrift(o, 2, false);
+	}
 }
 
 
