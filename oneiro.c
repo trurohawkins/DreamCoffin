@@ -42,7 +42,7 @@ int oneiroAction(Form *o, Action *a) {
 	if (oni->moveDir[0] != oni->destDir[0] || oni->moveDir[1] != oni->destDir[1]) {
 		oni->moveDir[0] = slerp(oni->moveDir[0], oni->destDir[0], oni->curAccel);
 		oni->moveDir[1] = slerp(oni->moveDir[1], oni->destDir[1], oni->curAccel);
-		printf("%f, %f\n", oni->moveDir[0], oni->moveDir[1]);
+		//printf("%f, %f\n", oni->moveDir[0], oni->moveDir[1]);
 		if (oni->curAccel + accel < 1) {
 			oni->curAccel += accel;
 		} else {
@@ -63,35 +63,43 @@ int oneiroAction(Form *o, Action *a) {
 }
 
 bool moveOneiro(Oneiro *oni) {
-	if (oni->moveDir[0] != 0 || oni->moveDir[1] != 0) {
-		int dest[2] = {oni->self->pos[0], oni->self->pos[1]};
-		int d = abs(oni->moveDir[0]) > abs(oni->moveDir[1]) ? 0 : 1;
-		//dest[d] += sign(oni->moveDir[d]);
-		dest[0] += sign(oni->moveDir[0]);
-		dest[1] += sign(oni->moveDir[1]);
-		//printf("movei to %i, %i\n", dest[0], dest[1]);
-		if (dest[0] > -1 && dest[1] > -1 && dest[0] < world && dest[1] < world) {
-			linkedList *hit = scanCell(dest[0], dest[1]);
-			while (hit) {
-				Form *check = hit->data;
-				if (check->id == 1) {
-					/*
-					oni->moveDir[0] = 0;
-					oni->moveDir[1] = 0;
-					oni->destDir[0] = 0;
-					oni->destDir[1] = 0;
-					oni->curAccel = 0;
-					*/
-					return false;
-				} 
-				hit = hit->next;
+	bool moved = false;
+	if (!equal(oni->moveDir[0], 0) || !equal(oni->moveDir[1], 0)) {
+		//printf("move dir: %f, %f\n", oni->moveDir[0], oni->moveDir[1]);
+		int moves[4] = {signF(oni->moveDir[0]), 0, 0, signF(oni->moveDir[1])};
+		for (int i = 0; i < 2; i++) {
+			if (moves[i*2] != 0 || moves[(i*2)+1] != 0) {
+				int pos[2] = {oni->self->pos[0], oni->self->pos[1]};
+				int dest[2] = {pos[0]+moves[i*2], pos[1]+moves[(i*2)+1]};
+				//printf("pos (%i, %i) -> dest: (%i, %i)\n", pos[0], pos[1], dest[0], dest[1]);
+				if (dest[0] > -1 && dest[1] > -1 && dest[0] < world && dest[1] < world) {
+					linkedList *hit = scanCell(dest[0], dest[1]);
+					bool blocked = false;
+					while (hit) {
+						Form *check = hit->data;
+						if (check->id == 1) {
+							/*
+							oni->moveDir[0] = 0;
+							oni->moveDir[1] = 0;
+							oni->destDir[0] = 0;
+							oni->destDir[1] = 0;
+							oni->curAccel = 0;
+							*/
+							blocked = true;
+							break;
+						} 
+						hit = hit->next;
+					}
+					if (!blocked) {
+						removeForm(oni->self);
+						placeForm(dest[0], dest[1], oni->self);
+						moved = true;
+					}
+				}
 			}
-			removeForm(oni->self);
-			placeForm(dest[0], dest[1], oni->self);
-			return true;
 		}
 	}
-	return false;
+	return moved;
 }
 
 int getLast(intList *stack) {
